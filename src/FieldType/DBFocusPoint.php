@@ -287,7 +287,7 @@ class DBFocusPoint extends DBComposite
         /** @var \Imagick $driverInstance */
         $driverInstance = $interventionImage->core()->native();
         $iccProfile = null;
-        if ($driverInstsance && $driverInstance instanceof \Imagick) {
+        if ($driverInstance && $driverInstance instanceof \Imagick) {
             // Now get the ICC profile
             $profiles = $driverInstance->getImageProfiles('icc', true);
             $iccProfile = $profiles['icc'] ?? null;
