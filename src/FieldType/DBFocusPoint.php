@@ -281,21 +281,51 @@ class DBFocusPoint extends DBComposite
         $cropAxis = $cropData['CropAxis'];
         $cropOffset = $cropData['CropOffset'];
 
+        /** @var \Intervention\Image\Image $interventionImage */
+        $interventionImage = $backend->getImageResource();
+
+        /** @var \Imagick $driverInstance */
+        $driverInstance = $interventionImage->core()->native();
+        $iccProfile = null;
+        if ($driverInstsance && $driverInstance instanceof \Imagick) {
+            // Now get the ICC profile
+            $profiles = $driverInstance->getImageProfiles('icc', true);
+            $iccProfile = $profiles['icc'] ?? null;
+        }
+
         // Resize based on axis
         switch ($cropAxis) {
             case 'x':
                 //Generate image
-                return $backend
+                $output = $backend
                     ->resizeByHeight($height)
                     ->crop(0, $cropOffset, $width, $height);
+
+                if ($iccProfile) {
+                    $driverInstance->setImageProfile('icc', $iccProfile);
+                }
+
+                return $output;
             case 'y':
                 //Generate image
-                return $backend
+                $output = $backend
                     ->resizeByWidth($width)
                     ->crop($cropOffset, 0, $width, $height);
+
+                if ($iccProfile) {
+                    $driverInstance->setImageProfile('icc', $iccProfile);
+                }
+
+                return $output;
             default:
                 //Generate image without cropping
-                return $backend->resize($width, $height);
+                $output = $backend->resize($width, $height);
+
+                if ($iccProfile) {
+                    $driverInstance->setImageProfile('icc', $iccProfile);
+                }
+
+                return $output;
         }
     }
 
