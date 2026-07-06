@@ -286,6 +286,7 @@ class DBFocusPoint extends DBComposite
 
         /** @var \Imagick $driverInstance */
         $driverInstance = $interventionImage->core()->native();
+        
         $iccProfile = null;
         if ($driverInstance && $driverInstance instanceof \Imagick) {
             // Now get the ICC profile
@@ -302,7 +303,7 @@ class DBFocusPoint extends DBComposite
                     ->crop(0, $cropOffset, $width, $height);
 
                 if ($iccProfile) {
-                    $driverInstance->setImageProfile('icc', $iccProfile);
+                    $output->getImageResource()->core()->native()->setImageProfile('icc', $iccProfile);
                 }
 
                 return $output;
@@ -313,7 +314,7 @@ class DBFocusPoint extends DBComposite
                     ->crop($cropOffset, 0, $width, $height);
 
                 if ($iccProfile) {
-                    $driverInstance->setImageProfile('icc', $iccProfile);
+                    $output->getImageResource()->core()->native()->setImageProfile('icc', $iccProfile);
                 }
 
                 return $output;
@@ -322,7 +323,7 @@ class DBFocusPoint extends DBComposite
                 $output = $backend->resize($width, $height);
 
                 if ($iccProfile) {
-                    $driverInstance->setImageProfile('icc', $iccProfile);
+                    $output->getImageResource()->core()->native()->setImageProfile('icc', $iccProfile);
                 }
 
                 return $output;
